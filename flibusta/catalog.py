@@ -18,7 +18,7 @@ def readCatalog(fileName):
     '''Читаем каталог флибусты 
     Первая строка каталога - список ключей словаря'''
     if not os.path.exists(fileName):
-        print ('Нет такого файла: {}'.format(fileName))
+        print ('Нет такого файла: {} (рабочая директория ) {}'.format(fileName, os.getcwd()))
         raise IOError()
     
     
@@ -86,4 +86,4 @@ def findFile(ID, directory):
                 return archive, book
             
             
-    return '[Не найдено]', '[Не найдено]'
+    return None, None

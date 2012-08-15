@@ -29,9 +29,7 @@ def show(directory, iterable, quiet, extract, limit, format):
     Автор: {lastname}, {firstname} {middlename}
     Язык: {language}
     Год выпуска: {year}
-    ID книги: {id}
-    Файл: {file} в архиве {archive}
-    '''
+    ID книги: {id}'''
     #if isinstance(extract, str) and (not os.path.exists(extract)):
     #    os.mkdir(extract)
     
@@ -39,7 +37,6 @@ def show(directory, iterable, quiet, extract, limit, format):
     if extract:
         if not os.path.exists(extract):
             os.mkdir(extract)
-        os.chdir(extract)
         
     for dct in iterable:
         if limit >= 0  and i >= limit:
@@ -48,12 +45,19 @@ def show(directory, iterable, quiet, extract, limit, format):
         archive, file = catalog.findFile(dct['id'], directory)
         if not quiet:
             print(info.format(archive=archive, file=file, **dct))
+            if archive and file:
+                print ('    Файл: {file} в архиве {archive}'.format(file=file, archive=archive))
+            else:
+                print('    Файл: не найден')
+                
+                                
             print()
             print()
-        if extract:
+        if extract and isinstance(archive, str) and os.path.exists(archive):
             myzip = zipfile.ZipFile(archive)
-            myzip.extract(file)
-            os.rename(file, '.'.join(format.format(**dct), os.path.splitext(file)[1]))
+            myzip.extract(file, extract)
+            os.rename(os.path.join(extract, file),
+                      os.path.join(extract, '.'.join((format.format(**dct), os.path.splitext(file)[1]))))
             
         i += 1
 
