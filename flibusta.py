@@ -103,7 +103,13 @@ if __name__ == '__main__':
     if args.id:
         kwargs = {'id':args.id}
     else:
+        #как сделать красивее?
         varargs = vars(args)
+        query_keys = ('title','firstname', 'middlename', 'lastname','subtitle', 'series', 'language', 'year')
+        if all((varargs[key] is None for key in query_keys)):
+            print('PyFlibusta Error: Не указан запрос', file=sys.stderr)
+            exit()  
+
         kwargs = dict()
         
         for key in catalog.keys:
