@@ -44,6 +44,7 @@ def searchCatalog(fileName, **kwargs):
         if 'id' in kwargs:
             if kwargs['id'] == book['id']:
                 yield book
+                continue
             else:
                 continue
             
