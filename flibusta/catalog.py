@@ -72,8 +72,9 @@ def findFile(ID, directory):
     возвращаем кортеж: (полный путь к zip-архиву,название файла книги) Поддержка дубликатов не предусмотрена.
     
     '''
-    if not isinstance(ID, int):
-        raise TypeError('book ID is not int')
+    if not ID: #может быть потому что каталог неправильно отформатирован, не будем вызывать исключение
+        return None,None
+
     for archive in glob.glob(directory + '/*.zip'):
         logger.info('processing file {}'.format(archive))
         for book in  processArchive(archive):

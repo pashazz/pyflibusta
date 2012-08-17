@@ -39,7 +39,7 @@ def show(directory, iterable, quiet, extract, limit, format, interactive):
     for dct in iterable:
         if limit >= 0  and i >= limit:
             return 
-        
+
         archive, file = catalog.findFile(dct['id'], directory)
         if not quiet:
             print(info.format(archive=archive, file=file, **dct))
