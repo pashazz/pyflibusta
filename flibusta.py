@@ -10,7 +10,7 @@ import argparse, sys, glob, zipfile, os
 from flibusta import catalog
 
 
-def show(directory, iterable, quiet, extract, limit, format):
+def show(directory, iterable, quiet, extract, limit, format, interactive):
     '''
     показывает информацию о книге (iterable - список книг, отдаваемый searchCatalog)
     directory - папка с архивами
@@ -30,8 +30,6 @@ def show(directory, iterable, quiet, extract, limit, format):
     Язык: {language}
     Год выпуска: {year}
     ID книги: {id}'''
-    #if isinstance(extract, str) and (not os.path.exists(extract)):
-    #    os.mkdir(extract)
     
     i = 0
     if extract:
@@ -54,10 +52,15 @@ def show(directory, iterable, quiet, extract, limit, format):
             print()
             print()
         if extract and isinstance(archive, str) and os.path.exists(archive):
-            myzip = zipfile.ZipFile(archive)
-            myzip.extract(file, extract)
-            os.rename(os.path.join(extract, file),
-                      os.path.join(extract, '.'.join((format.format(**dct), os.path.splitext(file)[1]))))
+            def prompt():
+                s = input('Распаковать эту книгу (y/n; д/н) (по умолчанию НЕТ) ->')
+                return bool(s in ('y', 'yes', 'д', 'да'))
+
+            if (interactive and prompt()) or not interactive:
+                myzip = zipfile.ZipFile(archive)
+                myzip.extract(file, extract)
+                os.rename(os.path.join(extract, file),
+                    os.path.join(extract, ''.join((format.format(**dct), os.path.splitext(file)[1]))))
             
         i += 1
 
@@ -69,11 +72,12 @@ if __name__ == '__main__':
                                             
                                         '''
                                      )
-    parser.add_argument('-q', '--quiet', help='Не печатать ничего. Используйте с -x', action='store_true')
+    parser.add_argument('-q', '--quiet', help='Не печатать ничего (используйте с -x)', action='store_true')
     parser.add_argument('-c', '--catalog', help='Каталог библиотеки Флибуста (обычно catalog.txt)', default='catalog.txt', metavar='ФАЙЛ КАТАЛОГА')
     parser.add_argument('-n', '--limit', metavar='ЛИМИТ', help='Количество книг для вывода', type=int, default= -1)
     act_gr = parser.add_argument_group('Действия')
     parser.add_argument('-f', '--format', metavar='ФОРМАТ', help='Формат выходных файлов')
+    parser.add_argument('-i', '--interactive', help='Интерактивный режим (использовать с -x)- спрашивать при попытке распаковки', action='store_true')
        
     parser.add_argument('-d', '--directory', help='Директория с архивом библиотеки', required=True, metavar='ДИРЕКТОРИЯ')
     parser.add_argument('-x', '--extract', help='Распаковать файлы автоматически в директорию (по умолчанию в рабочую)', metavar='ДИРЕКТОРИЯ',
@@ -89,9 +93,8 @@ if __name__ == '__main__':
     reg.add_argument('-l', '--language', help='Язык книги (двухбуквенный формат)', metavar='ЯЗЫК')
     reg.add_argument('-y', '--year', help='Год выхода книги', metavar='ГОД')
     
-    
     mut_gr = parser.add_mutually_exclusive_group()
-    mut_gr.add_argument('-i', '--id', help='ID книги для точного поиска', type=int)
+    mut_gr.add_argument('--id', help='ID книги для точного поиска', type=int)
     mut_gr.add_argument_group(reg)
     
     args = parser.parse_args()
@@ -117,5 +120,5 @@ if __name__ == '__main__':
                 kwargs[key] = varargs[key]
     
     genexp = catalog.searchCatalog(args.catalog, **kwargs)
-    show (args.directory, genexp, args.quiet, args.extract, args.limit, args.format)
+    show (args.directory, genexp, args.quiet, args.extract, args.limit, args.format,args.interactive)
     
