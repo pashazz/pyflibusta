@@ -50,7 +50,7 @@ def searchCatalog(fileName, **kwargs):
             
             
         for key in kwargs:
-            tests.append(re.search(kwargs[key], book[key],re.I))
+            tests.append(re.search(kwargs[key], book[key]))
         
         if all(tests):
             yield book
