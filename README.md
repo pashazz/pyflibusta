@@ -1,6 +1,6 @@
 # PyFlibusta
 <b>PyFlibusta</b> - это поисковик по базе библиотеки <a href=http://flibusta.net> Flibusta </a>
-Для его использования вам необходимо скачать зеркало библиотеки из zip-файлов отсюда: <a href=http://book.libertorrent.com/viewforum.php?f=245> Трекер Libertorrent</a>
+Для его использования вам необходимо скачать зеркало библиотеки из zip-файлов отсюда: <a href=http://booktracker.org/viewtopic.php?t=46979>Книжный трекер</a>
 
 ## Каталог
 Программе необходим каталог Флибусты, который находится по адресу  http://www.flibusta.net/catalog/catalog.zip
